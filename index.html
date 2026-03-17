@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="%de100">
+    <meta name="theme-color" content="#1e3a5f">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="%de100">
+
+    <title>%de100 - Yüzde Hesaplama</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="icons/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="icons/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="icons/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="icons/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="icons/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="icons/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="icons/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180x180.png">
+
+    <!-- iOS Splash Screens -->
+    <link rel="apple-touch-startup-image" href="icons/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)">
+    <link rel="apple-touch-startup-image" href="icons/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)">
+    <link rel="apple-touch-startup-image" href="icons/splash-1242x2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)">
+    <link rel="apple-touch-startup-image" href="icons/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)">
+    <link rel="apple-touch-startup-image" href="icons/splash-1536x2048.png" media="(min-device-width: 768px) and (max-device-width: 1024px)">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: #f0f4f8;
+            min-height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            width: 100%;
+            max-width: 420px;
+            padding: 32px;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .app-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%);
+            border-radius: 16px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .header .subtitle {
+            font-size: 0.7rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header .mode-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-top: 4px;
+            padding: 8px 16px;
+            background: #f0f4f8;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .tabs-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .tab-btn {
+            padding: 12px 6px;
+            border: 1.5px solid #e5e7eb;
+            background: #f8fafc;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #4b5563;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            touch-action: manipulation;
+        }
+
+        .tab-btn:hover {
+            background: #f1f5f9;
+            transform: translateY(-1px);
+        }
+
+        .tab-btn:active {
+            transform: scale(0.98);
+        }
+
+        .tab-btn.active {
+            background: #1e3a5f;
+            border-color: #1e3a5f;
+            color: white;
+            box-shadow: 0 2px 8px rgba(30, 58, 95, 0.3);
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-family: inherit;
+            background: #f8fafc;
+            color: #1f2937;
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #1e3a5f;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(30, 58, 95, 0.1);
+        }
+
+        .input-group input::placeholder {
+            color: #9ca3af;
+        }
+
+        .result-box {
+            background: #f8fafc;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 28px 20px;
+            text-align: center;
+            margin: 24px 0;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .result-box.has-result {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%);
+            border-color: #1e3a5f;
+            color: white;
+            box-shadow: 0 8px 24px rgba(30, 58, 95, 0.3);
+            transform: scale(1.02);
+        }
+
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .result-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .result-placeholder {
+            color: #9ca3af;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .clear-btn {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #4b5563;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            touch-action: manipulation;
+        }
+
+        .clear-btn:hover {
+            background: #f8fafc;
+            border-color: #1e3a5f;
+            color: #1e3a5f;
+        }
+
+        .clear-btn:active {
+            transform: scale(0.98);
+        }
+
+        .install-prompt {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .install-prompt.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .install-btn {
+            background: white;
+            color: #1e3a5f;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.8rem;
+            color: #1e3a5f;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* iPhone X+ için safe area */
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: max(20px, env(safe-area-inset-left));
+                padding-right: max(20px, env(safe-area-inset-right));
+                padding-bottom: max(20px, env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Dark mode desteği */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #0f172a;
+            }
+            .container {
+                background: #1e293b;
+            }
+            .header h1, .header .mode-title {
+                color: #f1f5f9;
+            }
+            .header .mode-title {
+                background: #334155;
+            }
+            .tab-btn {
+                background: #334155;
+                border-color: #475569;
+                color: #cbd5e1;
+            }
+            .tab-btn.active {
+                background: #60a5fa;
+                border-color: #60a5fa;
+                color: #0f172a;
+            }
+            .input-group input {
+                background: #334155;
+                border-color: #475569;
+                color: #f1f5f9;
+            }
+            .input-group label {
+                color: #cbd5e1;
+            }
+            .result-box {
+                background: #334155;
+                border-color: #475569;
+            }
+            .result-placeholder {
+                color: #64748b;
+            }
+            .clear-btn {
+                background: #334155;
+                border-color: #475569;
+                color: #cbd5e1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="install-prompt" id="installPrompt">
+            <div>📱 Bu uygulamayı ana ekranınıza ekleyin!</div>
+            <button class="install-btn" onclick="showInstallInstructions()">Nasıl Eklerim?</button>
+        </div>
+
+        <div class="header">
+            <div class="app-icon">%</div>
+            <h1>de100</h1>
+            <div class="subtitle">YÜZDE HESAPLAMA ARACI</div>
+            <div class="mode-title" id="modeTitle">Oran Bulma</div>
+        </div>
+
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="setMode('oran')">Oran</button>
+                <button class="tab-btn" onclick="setMode('deger')">Değer</button>
+                <button class="tab-btn" onclick="setMode('degisim')">Değişim</button>
+            </div>
+            <div class="tabs">
+                <button class="tab-btn" onclick="setMode('indirim')">İndirim</button>
+                <button class="tab-btn" onclick="setMode('ekle')">Ekle</button>
+                <button class="tab-btn" onclick="setMode('ters')">Ters</button>
+            </div>
+        </div>
+
+        <!-- Oran Bulma -->
+        <div id="mode-oran" class="mode-content">
+            <div class="input-group">
+                <label>A Sayısı</label>
+                <input type="number" id="oran-a" placeholder="25" oninput="calculateOran()">
+            </div>
+            <div class="input-group">
+                <label>B Sayısı</label>
+                <input type="number" id="oran-b" placeholder="200" oninput="calculateOran()">
+            </div>
+        </div>
+
+        <!-- Değer Bulma -->
+        <div id="mode-deger" class="mode-content hidden">
+            <div class="input-group">
+                <label>Sayı</label>
+                <input type="number" id="deger-sayi" placeholder="200" oninput="calculateDeger()">
+            </div>
+            <div class="input-group">
+                <label>Yüzde (%)</label>
+                <input type="number" id="deger-yuzde" placeholder="25" oninput="calculateDeger()">
+            </div>
+        </div>
+
+        <!-- Değişim -->
+        <div id="mode-degisim" class="mode-content hidden">
+            <div class="input-group">
+                <label>Eski Değer</label>
+                <input type="number" id="degisim-eski" placeholder="100" oninput="calculateDegisim()">
+            </div>
+            <div class="input-group">
+                <label>Yeni Değer</label>
+                <input type="number" id="degisim-yeni" placeholder="150" oninput="calculateDegisim()">
+            </div>
+        </div>
+
+        <!-- İndirim -->
+        <div id="mode-indirim" class="mode-content hidden">
+            <div class="input-group">
+                <label>Orjinal Fiyat</label>
+                <input type="number" id="indirim-fiyat" placeholder="1000" oninput="calculateIndirim()">
+            </div>
+            <div class="input-group">
+                <label>İndirim Oranı (%)</label>
+                <input type="number" id="indirim-oran" placeholder="20" oninput="calculateIndirim()">
+            </div>
+        </div>
+
+        <!-- Ekle -->
+        <div id="mode-ekle" class="mode-content hidden">
+            <div class="input-group">
+                <label>Ana Değer</label>
+                <input type="number" id="ekle-sayi" placeholder="1000" oninput="calculateEkle()">
+            </div>
+            <div class="input-group">
+                <label>Eklenecek Yüzde (%)</label>
+                <input type="number" id="ekle-yuzde" placeholder="18" oninput="calculateEkle()">
+            </div>
+        </div>
+
+        <!-- Ters (KDV Çıkarma) -->
+        <div id="mode-ters" class="mode-content hidden">
+            <div class="input-group">
+                <label>KDV Dahil Tutar</label>
+                <input type="number" id="ters-tutar" placeholder="1180" oninput="calculateTers()">
+            </div>
+            <div class="input-group">
+                <label>KDV Oranı (%)</label>
+                <input type="number" id="ters-oran" placeholder="18" oninput="calculateTers()">
+            </div>
+        </div>
+
+        <div class="result-box" id="resultBox">
+            <span class="result-placeholder">Değerleri girin</span>
+        </div>
+
+        <button class="clear-btn" onclick="clearAll()">TEMİZLE</button>
+
+        <div class="footer">fikirbabasi.net</div>
+    </div>
+
+    <script>
+        // PWA Service Worker kayıt
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed'));
+        }
+
+        // Install prompt gösterimi
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installPrompt').classList.add('show');
+        });
+
+        // iOS için install kontrolü
+        const isIos = () => {
+            const userAgent = window.navigator.userAgent.toLowerCase();
+            return /iphone|ipad|ipod/.test(userAgent);
+        };
+
+        const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+
+        if (isIos() && !isInStandaloneMode()) {
+            document.getElementById('installPrompt').classList.add('show');
+        }
+
+        function showInstallInstructions() {
+            if (isIos()) {
+                alert('📱 iPhone\'da Safari\'den paylaş butonuna basıp \"Ana Ekrana Ekle\" seçeneğini kullanın.');
+            } else {
+                alert('📱 Chrome\'da menüden \"Uygulama yükle\" veya \"Ana ekrana ekle\" seçeneğini kullanın.');
+            }
+        }
+
+        let currentMode = 'oran';
+
+        const modeTitles = {
+            'oran': 'Oran Bulma',
+            'deger': 'Değer Bulma',
+            'degisim': 'Değişim Hesaplama',
+            'indirim': 'İndirim Hesaplama',
+            'ekle': 'Yüzde Ekleme',
+            'ters': 'KDV Çıkarma'
+        };
+
+        function setMode(mode) {
+            currentMode = mode;
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            document.getElementById('modeTitle').textContent = modeTitles[mode];
+
+            document.querySelectorAll('.mode-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById('mode-' + mode).classList.remove('hidden');
+
+            clearResult();
+        }
+
+        function clearResult() {
+            const resultBox = document.getElementById('resultBox');
+            resultBox.classList.remove('has-result');
+            resultBox.innerHTML = '<span class="result-placeholder">Değerleri girin</span>';
+        }
+
+        function showResult(value, label) {
+            const resultBox = document.getElementById('resultBox');
+            resultBox.classList.add('has-result');
+            resultBox.innerHTML = `
+                <div class="result-value">${value}</div>
+                <div class="result-label">${label}</div>
+            `;
+        }
+
+        function formatNumber(num) {
+            if (isNaN(num)) return '-';
+            return new Intl.NumberFormat('tr-TR', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }).format(num);
+        }
+
+        function calculateOran() {
+            const a = parseFloat(document.getElementById('oran-a').value);
+            const b = parseFloat(document.getElementById('oran-b').value);
+
+            if (isNaN(a) || isNaN(b) || b === 0) {
+                clearResult();
+                return;
+            }
+
+            const result = (a / b) * 100;
+            showResult(formatNumber(result) + '%', `${formatNumber(a)}, ${formatNumber(b)}'nin %${formatNumber(result)}'idir`);
+        }
+
+        function calculateDeger() {
+            const sayi = parseFloat(document.getElementById('deger-sayi').value);
+            const yuzde = parseFloat(document.getElementById('deger-yuzde').value);
+
+            if (isNaN(sayi) || isNaN(yuzde)) {
+                clearResult();
+                return;
+            }
+
+            const result = (sayi * yuzde) / 100;
+            showResult(formatNumber(result), `${formatNumber(sayi)} sayısının %${formatNumber(yuzde)}`);
+        }
+
+        function calculateDegisim() {
+            const eski = parseFloat(document.getElementById('degisim-eski').value);
+            const yeni = parseFloat(document.getElementById('degisim-yeni').value);
+
+            if (isNaN(eski) || isNaN(yeni) || eski === 0) {
+                clearResult();
+                return;
+            }
+
+            const result = ((yeni - eski) / eski) * 100;
+            const isArtis = result >= 0;
+            showResult(formatNumber(result) + '%', isArtis ? '📈 Artış' : '📉 Azalış');
+        }
+
+        function calculateIndirim() {
+            const fiyat = parseFloat(document.getElementById('indirim-fiyat').value);
+            const oran = parseFloat(document.getElementById('indirim-oran').value);
+
+            if (isNaN(fiyat) || isNaN(oran)) {
+                clearResult();
+                return;
+            }
+
+            const indirimTutar = (fiyat * oran) / 100;
+            const sonFiyat = fiyat - indirimTutar;
+            showResult(formatNumber(sonFiyat) + ' ₺', `İndirim: ${formatNumber(indirimTutar)} ₺`);
+        }
+
+        function calculateEkle() {
+            const sayi = parseFloat(document.getElementById('ekle-sayi').value);
+            const yuzde = parseFloat(document.getElementById('ekle-yuzde').value);
+
+            if (isNaN(sayi) || isNaN(yuzde)) {
+                clearResult();
+                return;
+            }
+
+            const eklenecek = (sayi * yuzde) / 100;
+            const result = sayi + eklenecek;
+            showResult(formatNumber(result), `Eklendi: ${formatNumber(eklenecek)}`);
+        }
+
+        function calculateTers() {
+            const tutar = parseFloat(document.getElementById('ters-tutar').value);
+            const oran = parseFloat(document.getElementById('ters-oran').value);
+
+            if (isNaN(tutar) || isNaN(oran) || oran === 0) {
+                clearResult();
+                return;
+            }
+
+            const kdvHaric = tutar / (1 + (oran / 100));
+            const kdvTutar = tutar - kdvHaric;
+            showResult(formatNumber(kdvHaric), `KDV: ${formatNumber(kdvTutar)}`);
+        }
+
+        function clearAll() {
+            document.querySelectorAll('input').forEach(input => input.value = '');
+            clearResult();
+        }
+    </script>
+</body>
+</html>
